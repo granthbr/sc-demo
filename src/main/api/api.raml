@@ -1,0 +1,153 @@
+#%RAML 0.8
+baseUri: http://mocksvc.mulesoft.com/mocks/20f04da5-ab01-47a0-a27c-b993a60ec97e
+title: sc-demo
+version: 1.0.0
+documentation: 
+  - title: Sierra-Cedar Demo API
+    content: |
+       !include documentation.txt
+resourceTypes:
+  - collection:
+      description: List of <<resourcePathName>>
+      get:
+        description:
+        responses:
+          200:
+            body:
+              application/json:
+                example:  |
+                  <<exampleCollection>>
+      post:
+        description: |
+            Add a new <<resoourcePathName|singularize>>
+        queryParameters:
+          token:
+            description:
+            example: cdee43221h
+            required: true
+            type: string
+        body:
+          application/json:
+            schema: <<resourcePathName|!singularize>>
+            example: |
+              <<exampleItem>>
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  { "message": "The <<resourcePathName|!singularize>> has been properly entered" }
+  - collection-item:
+      description: Entity representing a <<resourcePathName|!singularize>>
+      get:
+        description: |
+          Get the <<resourcePathName|!singularize>>
+          with <<resourcePathName|!singularize>>Id =
+          {<<resourcePathName|!singularize>>Id}
+        responses:
+          200:
+            body:
+              application/json:
+                example: |
+                  <<exampleItem>>
+          404:
+            body:
+              application/json:
+                example: |
+                  {"message": "<<resourcePathName|!singularize>> not found" }
+/ftp_upload:
+  description: "file to upload to SaaS application"
+  get:
+    description: |
+      Enter the file for eventual data upload to Salesforce
+    queryParameters:
+     fname:
+       description: "channel to attach to"
+/salesforce:
+  description: |
+    Salesforce data push or retrieval
+  get:
+      description: |
+        get data as csv download
+      headers:
+        uname: 
+          description: SFDC username
+          type: string
+          required: true
+        password:
+          description: SFDC password
+          required: true
+          type: string
+        sf_token:
+          description: SFDC password
+          required: true
+          type: string
+      queryParameters:
+        datatype:
+          description: "Pick contacts, cases, or opportunities"
+          enum: [contacts,cases,opportunities]
+          required: true
+/jira:
+  description: "Get all JIRA issues under SFDC project"
+  get:
+    headers:
+      uname:
+        description: "user name"
+        type: string
+        required: true
+      pass:
+        description: "jira password"
+        required: true
+        type: string
+/slack:
+  description: "slack message"
+  post:
+    description: "create a slack message"
+    queryParameters:
+      channel:
+        description: "channel to attach to "
+  get:
+    description: "get a slack message"
+    queryParameters:
+     channel:
+       description: "channel to attach to"
+/google:
+  description: "google docs to get or post"
+  get:
+    description: "get doc"
+    queryParameters:
+      typeId:
+        description: "contacts or whatever"
+    headers:
+      oauth_token:
+        description: "google token"
+  post:
+    description: "post google "
+    body:  
+      multipart/form-data:
+         formParameters:
+          file:
+            description: |
+                Enter the file for eventual data upload to Google
+            required: true
+            type: file
+/docker:
+  description: "Docker connector for Mule"
+  get:
+    description: "List images"
+    queryParameters:
+      cmd:
+        required: true
+        enum: [images, all_images]    
+  post:
+    description: "Create image and start it"
+    body:
+      application/json:
+        
+
+            
+          
+    
+            
+          
+        

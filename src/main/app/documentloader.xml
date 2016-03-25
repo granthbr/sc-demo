@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:dw="http://www.mulesoft.org/schema/mule/ee/dw" xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:google-spreadsheets="http://www.mulesoft.org/schema/mule/google-spreadsheets"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/google-spreadsheets http://www.mulesoft.org/schema/mule/google-spreadsheets/current/mule-google-spreadsheets.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/ee/dw http://www.mulesoft.org/schema/mule/ee/dw/current/dw.xsd">
+   
+	<flow name="GoogleGetSpreadsheet">
+		<google-spreadsheets:get-all-spreadsheets
+			config-ref="Google_SS" doc:name="Get_Google_CSVs" />
+        <batch:execute name="ProcessGoogleSheets" doc:name="GoogleSheetsBatchProcessor"/>
+        <catch-exception-strategy doc:name="Log Error to Console/Log">
+            <set-payload doc:name="Set Log Error" value="Cannot Retrieve CSVs"/>
+            <logger level="INFO" doc:name="Copy_of_Logger" message="#[payload]"/>
+        </catch-exception-strategy>
+	</flow>
+	<flow name="GooglePostSpreadsheet">
+        <google-spreadsheets:set-csv-values config-ref="Google_SS" spreadsheet="muleTest" worksheet="one" doc:name="Put_data_in_CSV"/>
+        <catch-exception-strategy doc:name="Copy_of_Catch Exception Strategy">
+            <set-payload doc:name="Set Log Error" value="Cannot POST data to CSV"/>
+            <logger level="INFO" doc:name="Log Error to Console/Log" message="#[payload]"/>
+        </catch-exception-strategy>
+	</flow>
+    <batch:job name="ProcessGoogleSheets">
+        <batch:input>
+            <dw:transform-message doc:name="Transform Message">
+                <dw:set-payload><![CDATA[%dw 1.0
+%output application/java
+---
+{
+}]]></dw:set-payload>
+            </dw:transform-message>
+        </batch:input>
+        <batch:process-records>
+            <batch:step name="Batch_Step">
+                <logger level="INFO" doc:name="Individual Results" message="#[payload]"/>
+            </batch:step>
+        </batch:process-records>
+        <batch:on-complete>
+            <logger level="INFO" doc:name="Batch Results" message="#[payload]"/>
+        </batch:on-complete>
+    </batch:job>
+</mule>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<flow name="JMS-Logger">
+		<jms:inbound-endpoint queue="logger.in"
+			connector-ref="Active_MQ" doc:name="JMS-Logger" />
+		<choice doc:name="Choice">
+			<when expression="#[payload != null]">
+				<logger level="INFO" doc:name="Logger" message="#[payload]"/>
+			</when>
+			<otherwise>
+				<flow-ref name="loggerFlow" doc:name="loggerFlow" />
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Logger" message="LOGGER QUEUE"/>
+	</flow>
+	<flow name="JMS-SFDC">
+		<jms:inbound-endpoint queue="sfdc.in"
+			connector-ref="Active_MQ" doc:name="JMS-sfdc.in" />
+		<choice doc:name="Choice">
+			<when expression="#[payload != null]">
+                <flow-ref name="sfdcflow-contacts" doc:name="sfdcflow-contacts"/>
+				<logger level="INFO" doc:name="Logger" message="#[payload]" />
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="JMS-Slack">
+		<jms:inbound-endpoint queue="slack.in"
+			connector-ref="Active_MQ" doc:name="JMS-slack.in" />
+		<choice doc:name="Choice">
+			<when expression="#[payload != null]">
+                <flow-ref name="addMessageToChannel" doc:name="addMessageToChannel"/>
+				<logger level="INFO" doc:name="Logger" />
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" message="#[payload]"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="JMS-GoogleDocs">
+		<jms:inbound-endpoint queue="googleDoc.in"
+			connector-ref="Active_MQ" doc:name="JMS-googleDoc.in" />
+		<choice doc:name="Choice">
+			<when expression="#[payload != null]">
+                <flow-ref name="GooglePostSpreadsheet" doc:name="GooglePostSpreadsheet"/>
+				<logger level="INFO" doc:name="Logger" />
+			</when>
+			<otherwise>
+                <flow-ref name="GoogleGetSpreadsheet" doc:name="GoogleGetSpreadsheet"/>
+				<logger level="INFO" doc:name="Logger" />
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="JMS-JIRA">
+		<jms:inbound-endpoint queue="jira.in"
+			connector-ref="Active_MQ" doc:name="JMS-jira.in" />
+		<choice doc:name="Choice">
+			<when expression="#[payload != null]">
+				<logger level="INFO" doc:name="Logger" message="JIRA QUEUE"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger" message="JIRA QUEUE"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

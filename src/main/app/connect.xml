@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<flow name="get:/jira:api-config">
+		<set-payload value="jiraTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="jira.in"
+				connector-ref="Active_MQ" doc:name="JMS-jira.in" />
+		</scatter-gather>
+	</flow>
+	<flow name="get:/slack:api-config">
+		<set-payload value="slackGetTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="slack.in"
+				connector-ref="Active_MQ" doc:name="SlackJMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="get:/docker:api-config">
+		<set-payload value="dockerGetTest" doc:name="Set Payload" />
+		<jms:outbound-endpoint queue="docker.in"
+			connector-ref="Active_MQ" doc:name="JMS-docker.in" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="docker.in"
+				connector-ref="Active_MQ" doc:name="DockerJMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="get:/google:api-config">
+		<set-payload value="googleGetTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="google.in"
+				connector-ref="Active_MQ" doc:name="GoogleJMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="get:/ftp_upload:api-config">
+		<set-payload value="fileGettest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="file.in"
+				connector-ref="Active_MQ" doc:name="FileJMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="get:/salesforce:api-config">
+		<set-payload value="sfdcGetTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="sfdc.in"
+				connector-ref="Active_MQ" doc:name="SFDC-JMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="post:/docker:api-config">
+		<set-payload value="DockerPostTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="docker.in"
+				connector-ref="Active_MQ" doc:name="DockerJMS" />
+		</scatter-gather>
+	</flow>
+	<flow name="post:/slack:api-config">
+		<set-payload value="slackPostTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="slack.in"
+				connector-ref="Active_MQ" doc:name="slack.in" />
+		</scatter-gather>
+	</flow>
+	<flow name="post:/google:multipart/form-data:api-config">
+		<set-payload value="googlePostTest" doc:name="Set Payload" />
+		<scatter-gather doc:name="Scatter-Gather">
+			<jms:outbound-endpoint queue="logging.in"
+				connector-ref="Active_MQ" doc:name="JMS-logging.in" />
+			<jms:outbound-endpoint queue="google.in"
+				connector-ref="Active_MQ" doc:name="googleJMS" />
+		</scatter-gather>
+	</flow>
+</mule>

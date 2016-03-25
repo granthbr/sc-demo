@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jirarest="http://www.mulesoft.org/schema/mule/jirarest"
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/jira http://www.mulesoft.org/schema/mule/jira/current/mule-jira.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.mulesoft.org/schema/mule/jirarest http://www.mulesoft.org/schema/mule/jirarest/current/mule-jirarest.xsd">
+	<!-- <flow name="JiraCreateIssue" <jirarest:issues-issue-create config-ref="JiraRest__Basic_Authentification" 
+		entityType="Issue" doc:name="JiraRest" /> <logger level="INFO" doc:name="Logger" 
+		/> </flow> <flow name="JiraGetIssues"> <jirarest:issues-issue-get config-ref="JiraRest__Basic_Authentification" 
+		entityType="Issue" issueKeyOrId="sfdc" doc:name="JiraRest" /> <logger level="INFO" 
+		doc:name="Logger" /> </flow -->
+
+	<flow name="sfdcflow-contacts">
+		<sfdc:create-bulk config-ref="Salesforce__Basic_Authentication"
+			type="Contact" doc:name="Salesforce-contacts">
+			<sfdc:objects ref="#[payload]" />
+		</sfdc:create-bulk>
+		<logger level="INFO" doc:name="Logger" />
+	</flow>
+	<flow name="caseloaderFlow">
+		<sfdc:create config-ref="Salesforce__Basic_Authentication"
+			type="CollaborationGroupMemberRequest" doc:name="Salesforce">
+			<sfdc:objects ref="#[payload]" />
+		</sfdc:create>
+		<logger level="INFO" doc:name="Logger" />
+	</flow>
+</mule>

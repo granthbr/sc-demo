@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:google-spreadsheets="http://www.mulesoft.org/schema/mule/google-spreadsheets"
+	xmlns:jira="http://www.mulesoft.org/schema/mule/jira" xmlns:jirarest="http://www.mulesoft.org/schema/mule/jirarest"
+	xmlns:sfdc="http://www.mulesoft.org/schema/mule/sfdc" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/jirarest http://www.mulesoft.org/schema/mule/jirarest/current/mule-jirarest.xsd
+http://www.mulesoft.org/schema/mule/sfdc http://www.mulesoft.org/schema/mule/sfdc/current/mule-sfdc.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/google-spreadsheets http://www.mulesoft.org/schema/mule/google-spreadsheets/current/mule-google-spreadsheets.xsd">
+	<http:listener-config name="api-httpListenerConfig"
+		host="${http.host}" port="${http.port}" doc:name="HTTP Listener Configuration" />
+	<sfdc:config name="Salesforce__Basic_Authentication"
+		username="${sfcd.uname}" password="${sfdc.pass}" securityToken="${sfdc.token}"
+		doc:name="Salesforce: Basic Authentication" />
+	<!-- <jirarest:config-type name="JiraRest__Basic_Authentification" username="${jira.uname}" 
+		password="${jira.pass}" serverUrl="http://machine:8080" doc:name="JiraRest: 
+		Basic Authentification" /> -->
+	<!-- defaultAccessTokenId="${jira.token}" localPort="8083" -->
+	<google-spreadsheets:config-with-oauth
+		name="Google_SS" consumerKey="${google.ss.key}" consumerSecret="${google.ss.secret}"
+		doc:name="Google Spreadsheets">
+		<google-spreadsheets:oauth-callback-config />
+	</google-spreadsheets:config-with-oauth>
+	<jms:activemq-connector name="Active_MQ"
+		specification="1.1" username="${jms.uname}" password="${jms.pass}"
+		brokerURL="${jms.host}" validateConnections="true" persistentDelivery="true"
+		doc:name="Active MQ" />
+</mule>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:slack="http://www.mulesoft.org/schema/mule/slack" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/slack http://www.mulesoft.org/schema/mule/slack/current/mule-slack.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+    <slack:config-type name="Slack__Token_Configuration" accessToken="xoxp-6588287460-13049988116-17787968724-ab5846f026" doc:name="Slack: Token Configuration"/>
+    <flow name="addMessageToChannel">
+        <slack:post-message config-ref="Slack__Token_Configuration" channelId="C0L772MPB" message="#[payload]" doc:name="Slack"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <set-payload value="Slack is not avaiable or there is an error" doc:name="Set Payload"/>
+            <logger message="#[payload] _____#[message.exception]" level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
+    </flow>
+</mule>
