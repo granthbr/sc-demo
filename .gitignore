@@ -66,3 +66,5 @@ src/test/resources/mule.test.properties
 pom.xml.releaseBackup
 
 release.properties
+bg.properties
+
