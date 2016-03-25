@@ -67,4 +67,6 @@ pom.xml.releaseBackup
 
 release.properties
 bg.properties
+bgprod.properties
+
 
